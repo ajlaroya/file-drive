@@ -32,6 +32,7 @@ import {
   GanttChartIcon,
   ImageIcon,
   MoreVertical,
+  StarIcon,
   TrashIcon,
 } from "lucide-react";
 import { ReactNode, useState } from "react";
@@ -42,6 +43,7 @@ import Image from "next/image";
 
 function FileCardActions({ file }: { file: Doc<"files"> }) {
   const deleteFile = useMutation(api.files.deleteFile);
+  const toggleFavourite = useMutation(api.files.toggleFavourite);
   const { toast } = useToast();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
@@ -79,6 +81,17 @@ function FileCardActions({ file }: { file: Doc<"files"> }) {
           <MoreVertical />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
+          <DropdownMenuItem
+            onClick={() =>
+              toggleFavourite({
+                fileId: file._id,
+              })
+            }
+            className="flex gap-1 items-center cursor-pointer"
+          >
+            <StarIcon className="h-4 w-4" /> Favourite
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => setIsConfirmOpen(true)}
             className="flex gap-1 text-red-500 items-center cursor-pointer"
@@ -122,9 +135,13 @@ export function FileCard({ file }: { file: Doc<"files"> }) {
         {file.type === "pdf" && <FileTextIcon className="w-20 h-20" />}
       </CardContent>
       <CardFooter className="flex justify-center">
-        <Button onClick={() => {
-          window.open(file.url, "_blank");
-        }}>Download</Button>
+        <Button
+          onClick={() => {
+            window.open(file.url, "_blank");
+          }}
+        >
+          Download
+        </Button>
       </CardFooter>
     </Card>
   );

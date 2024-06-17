@@ -39,6 +39,7 @@ import { api } from "@/convex/_generated/api";
 import { useToast } from "@/components/ui/use-toast";
 import Image from "next/image";
 import { StarFilledIcon } from "@radix-ui/react-icons";
+import { Protect } from "@clerk/nextjs";
 
 function FileCardActions({
   file,
@@ -104,13 +105,15 @@ function FileCardActions({
               </div>
             )}
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={() => setIsConfirmOpen(true)}
-            className="flex gap-1 text-red-500 items-center cursor-pointer"
-          >
-            <TrashIcon className="h-4 w-4" /> Delete
-          </DropdownMenuItem>
+          <Protect role="org:admin" fallback={<></>}>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => setIsConfirmOpen(true)}
+              className="flex gap-1 text-red-500 items-center cursor-pointer"
+            >
+              <TrashIcon className="h-4 w-4" /> Delete
+            </DropdownMenuItem>
+          </Protect>
         </DropdownMenuContent>
       </DropdownMenu>
     </>

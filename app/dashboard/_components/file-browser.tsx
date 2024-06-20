@@ -6,9 +6,12 @@ import { useQuery } from "convex/react";
 import { UploadButton } from "./upload-button";
 import { FileCard } from "./file-card";
 import Image from "next/image";
-import { Loader2 } from "lucide-react";
+import { GridIcon, Loader2, RowsIcon } from "lucide-react";
 import { SearchBar } from "./search-bar";
 import { useState } from "react";
+import { DataTable } from "./file-table";
+import { columns } from "./columns";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 function Placeholder() {
   return (
@@ -54,38 +57,50 @@ export function FileBrowser({
   );
   const isLoading = files === undefined;
 
+  const modifiedFiles =
+    files?.map((file) => ({
+      ...file,
+      isFavourited: (favourites ?? []).some(
+        (favourite) => favourite.fileId === file._id
+      ),
+    })) ?? [];
+
   return (
-    <div className="w-full">
-      {isLoading && (
-        <div className="flex flex-col gap-8 w-full items-center mt-24">
-          <Loader2 className="h-32 w-32 animate-spin text-gray-500" />
-          <div className="text-2xl">Loading your files...</div>
-        </div>
-      )}
+    <div>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-2xl md:text-4xl font-bold">{title}</h1>
+        <SearchBar query={query} setQuery={setQuery} />
+        <UploadButton />
+      </div>
 
-      {!isLoading && (
-        <>
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-2xl md:text-4xl font-bold">{title}</h1>
-            <SearchBar query={query} setQuery={setQuery} />
-            <UploadButton />
+      <Tabs defaultValue="grid">
+        <TabsList className="mb-4">
+          <TabsTrigger value="grid" className="flex gap-2 items-center">
+            <GridIcon /> Grid
+          </TabsTrigger>
+          <TabsTrigger value="table" className="flex gap-2 items-center">
+            <RowsIcon /> Table
+          </TabsTrigger>
+        </TabsList>
+        {isLoading && (
+          <div className="flex flex-col gap-8 w-full items-center mt-24">
+            <Loader2 className="h-32 w-32 animate-spin text-gray-500" />
+            <div className="text-2xl">Loading your files...</div>
           </div>
-
-          {files.length === 0 && <Placeholder />}
-
+        )}
+        <TabsContent value="grid">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {files?.map((file) => {
-              return (
-                <FileCard
-                  favourites={favourites ?? []}
-                  key={file._id}
-                  file={file}
-                />
-              );
+            {modifiedFiles?.map((file) => {
+              return <FileCard key={file._id} file={file} />;
             })}
           </div>
-        </>
-      )}
+        </TabsContent>
+        <TabsContent value="table">
+          <DataTable columns={columns} data={modifiedFiles} />
+        </TabsContent>
+      </Tabs>
+
+      {files?.length === 0 && <Placeholder />}
     </div>
   );
 }

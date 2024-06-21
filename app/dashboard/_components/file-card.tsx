@@ -47,7 +47,7 @@ export function FileCard({
             alt={file.name}
             width="200"
             height="100"
-            src={getFileUrl(file.fileId)}
+            src={file.url}
           />
         )}
 

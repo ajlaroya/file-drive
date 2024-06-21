@@ -41,7 +41,7 @@ export function SearchBar({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex gap-2 items-center"
+          className="flex gap-1 items-center"
         >
           <FormField
             control={form.control}
@@ -49,14 +49,13 @@ export function SearchBar({
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input {...field} placeholder="your file name" />
+                  <Input {...field} placeholder="Search files" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
           <Button
-            size="sm"
             type="submit"
             disabled={form.formState.isSubmitting}
             className="flex gap-1"

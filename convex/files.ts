@@ -63,11 +63,11 @@ export const createFile = mutation({
       throw new ConvexError("you do not have access to this org");
     }
 
-    // const fileUrl = await ctx.storage.getUrl(args.fileId);
+    const fileUrl = await ctx.storage.getUrl(args.fileId);
 
-    // if (!fileUrl) {
-    //   throw new ConvexError("file not found");
-    // }
+    if (!fileUrl) {
+      throw new ConvexError("file not found");
+    }
 
     await ctx.db.insert("files", {
       name: args.name,
@@ -75,6 +75,7 @@ export const createFile = mutation({
       fileId: args.fileId,
       type: args.type,
       userId: hasAccess.user._id,
+      url: fileUrl,
     });
   },
 });
